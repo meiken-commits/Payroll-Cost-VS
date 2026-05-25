@@ -1002,10 +1002,36 @@
     return s;
   }
 
+  function packState(s) {
+    const vals = Object.keys(DEFAULTS).map(k => s[k]);
+    return 'v' + SCHEMA_VERSION + '.' + vals.join('.');
+  }
+
+  function parseHashState(raw) {
+    if (/^v\d+(\.|$)/.test(raw)) {
+      const parts = raw.split('.');
+      if (parseInt(parts[0].slice(1), 10) !== SCHEMA_VERSION) return null;
+      const keys = Object.keys(DEFAULTS);
+      const values = parts.slice(1);
+      if (values.length !== keys.length) return null;
+      const s = {};
+      for (let i = 0; i < keys.length; i++) {
+        const num = +values[i];
+        if (!Number.isFinite(num)) return null;
+        s[keys[i]] = num;
+      }
+      return s;
+    }
+    try {
+      const s = JSON.parse(decodeURIComponent(raw));
+      return (s && typeof s === 'object') ? s : null;
+    } catch (_) { return null; }
+  }
+
   function saveState() {
     const s = getState();
     try { localStorage.setItem(SAVE_KEY, JSON.stringify({ v: SCHEMA_VERSION, d: s })); } catch (_) {}
-    try { history.replaceState(null, '', location.pathname + '#' + encodeURIComponent(JSON.stringify(s))); } catch (_) {}
+    try { history.replaceState(null, '', location.pathname + '#' + packState(s)); } catch (_) {}
   }
 
   function applyState(s) {
@@ -1017,10 +1043,8 @@
 
   function loadState() {
     if (location.hash.length > 1) {
-      try {
-        const s = JSON.parse(decodeURIComponent(location.hash.slice(1)));
-        if (s && typeof s === 'object') { applyState(s); return; }
-      } catch (_) {}
+      const s = parseHashState(location.hash.slice(1));
+      if (s) { applyState(s); return; }
     }
     try {
       const raw = localStorage.getItem(SAVE_KEY);
