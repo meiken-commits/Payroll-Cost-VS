@@ -955,11 +955,19 @@
     document.getElementById('assumptions-card').classList.toggle('expanded');
   }
 
+  const TAB_NAMES = ['paper', 'teamrise', 'compare'];
+
   function switchTab(name, cell) {
+    if (!TAB_NAMES.includes(name)) return;
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.summary-cell').forEach(c => c.classList.remove('sc-active'));
     n('tab-' + name).classList.add('active');
+    if (!cell) {
+      const idx = TAB_NAMES.indexOf(name);
+      cell = document.querySelectorAll('.summary-bar .summary-cell')[idx];
+    }
     if (cell) cell.classList.add('sc-active');
+    try { history.replaceState(null, '', '/' + name + location.hash); } catch (_) {}
   }
 
   function applyPreset(staff, btn) {
@@ -997,7 +1005,7 @@
   function saveState() {
     const s = getState();
     try { localStorage.setItem(SAVE_KEY, JSON.stringify({ v: SCHEMA_VERSION, d: s })); } catch (_) {}
-    try { history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(s))); } catch (_) {}
+    try { history.replaceState(null, '', location.pathname + '#' + encodeURIComponent(JSON.stringify(s))); } catch (_) {}
   }
 
   function applyState(s) {
@@ -1351,6 +1359,8 @@
 
   // Init
   loadState();
+  const pathTab = location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  if (TAB_NAMES.includes(pathTab)) switchTab(pathTab);
 </script>
 </body>
 </html>

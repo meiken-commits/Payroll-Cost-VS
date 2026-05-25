@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/(paper|teamrise|compare)", "destination": "/index.html" }
+  ]
+}
