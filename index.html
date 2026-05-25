@@ -591,21 +591,7 @@
     text-transform: none;
   }
 
-  .copy-btn {
-    padding: 0.3rem 0.75rem;
-    font-size: 0.75rem;
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    cursor: pointer;
-    color: var(--text3);
-    font-family: inherit;
-    white-space: nowrap;
-    transition: all 0.15s;
-  }
-  .copy-btn:hover { color: var(--text2); border-color: var(--text2); }
-
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
     .summary-bar { grid-template-columns: 1fr 1fr; }
     .summary-bar .summary-cell:last-child { grid-column: 1 / -1; }
     .compare-grid { grid-template-columns: 1fr; }
@@ -664,7 +650,6 @@
         <span class="assumptions-peek" id="a-summary">職員40名 × 14回/年 = 560通発行。担当者時給¥2,500。</span>
       </div>
       <div style="display:flex;gap:0.5rem;flex-shrink:0">
-        <button class="copy-btn" id="copy-btn" onclick="event.stopPropagation(); copyLink()">リンクをコピー</button>
         <button class="reset-btn" onclick="event.stopPropagation(); resetAll()">リセット</button>
       </div>
     </div>
@@ -1002,36 +987,9 @@
     return s;
   }
 
-  function packState(s) {
-    const vals = Object.keys(DEFAULTS).map(k => s[k]);
-    return 'v' + SCHEMA_VERSION + '.' + vals.join('.');
-  }
-
-  function parseHashState(raw) {
-    if (/^v\d+(\.|$)/.test(raw)) {
-      const parts = raw.split('.');
-      if (parseInt(parts[0].slice(1), 10) !== SCHEMA_VERSION) return null;
-      const keys = Object.keys(DEFAULTS);
-      const values = parts.slice(1);
-      if (values.length !== keys.length) return null;
-      const s = {};
-      for (let i = 0; i < keys.length; i++) {
-        const num = +values[i];
-        if (!Number.isFinite(num)) return null;
-        s[keys[i]] = num;
-      }
-      return s;
-    }
-    try {
-      const s = JSON.parse(decodeURIComponent(raw));
-      return (s && typeof s === 'object') ? s : null;
-    } catch (_) { return null; }
-  }
-
   function saveState() {
     const s = getState();
     try { localStorage.setItem(SAVE_KEY, JSON.stringify({ v: SCHEMA_VERSION, d: s })); } catch (_) {}
-    try { history.replaceState(null, '', location.pathname + '#' + packState(s)); } catch (_) {}
   }
 
   function applyState(s) {
@@ -1043,8 +1001,7 @@
 
   function loadState() {
     if (location.hash.length > 1) {
-      const s = parseHashState(location.hash.slice(1));
-      if (s) { applyState(s); return; }
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (_) {}
     }
     try {
       const raw = localStorage.getItem(SAVE_KEY);
@@ -1056,16 +1013,7 @@
     calc();
   }
 
-  function copyLink() {
-    navigator.clipboard?.writeText(location.href).then(() => {
-      const btn = n('copy-btn');
-      const orig = btn.textContent;
-      btn.textContent = 'コピーしました ✓';
-      setTimeout(() => { btn.textContent = orig; }, 2000);
-    });
-  }
-
-  function calc() {
+function calc() {
     const staff = intVal('a-staff');
     const monthly = intVal('a-monthly');
     const bonus = intVal('a-bonus');
