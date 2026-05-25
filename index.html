@@ -152,6 +152,11 @@
     letter-spacing: 0;
     margin-right: 0.2rem;
   }
+  .section-title-totals {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
 
   /* Input table */
   .input-table { width: 100%; border-collapse: collapse; }
@@ -763,7 +768,7 @@
 
     <!-- Section 3 -->
     <div class="section s-labor">
-      <div class="section-title"><span>③ 人件費換算</span><span class="section-title-total"><span class="stt-label">合計：</span><span id="p-labor-subtotal">¥75,000</span></span></div>
+      <div class="section-title"><span>③ 人件費換算</span><span class="section-title-totals"><span class="section-title-total"><span class="stt-label">合計時間：</span><span id="p-labor-hours">—h</span></span><span class="section-title-total"><span class="stt-label">合計：</span><span id="p-labor-subtotal">¥75,000</span></span></span></div>
       <table class="input-table">
         <thead>
           <tr>
@@ -1081,6 +1086,7 @@ function calc() {
     n('p-post-labor-total').textContent = fmt(postTripHours * hourly);
     n('p-inquiry-total').textContent = fmt(inquiryHours * hourly);
     n('p-labor-subtotal').textContent = fmt(laborTotal);
+    n('p-labor-hours').textContent = fmtH(totalPaperTime);
 
     // ---- Update DOM: TeamRise ----
     n('t-user-qty').textContent = staff + '名 × 12ヶ月';
