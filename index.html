@@ -267,6 +267,92 @@
   .compare-row:last-child { border-bottom: none; }
   .compare-row .cr-label { color: var(--text2); }
   .compare-row .cr-val { font-variant-numeric: tabular-nums; font-weight: 500; }
+  .compare-row .cr-right { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .compare-row .cr-hours {
+    font-size: 0.72rem;
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
+    background: var(--surface2);
+    padding: 0.1rem 0.4rem;
+    border-radius: 99px;
+  }
+  .compare-card.teamrise .compare-row .cr-hours { background: var(--accent2-light); color: var(--accent2); }
+  .compare-row .cr-chev {
+    color: var(--text3);
+    font-size: 0.95rem;
+    line-height: 1;
+    opacity: 0.55;
+    transition: opacity 0.12s, transform 0.12s;
+  }
+  .compare-row.clickable { cursor: pointer; transition: background 0.12s; }
+  .compare-row.clickable:hover { background: var(--surface2); }
+  .compare-row.clickable:hover .cr-chev { opacity: 1; transform: translateX(2px); color: var(--text2); }
+  .compare-card.teamrise .compare-row.clickable:hover { background: var(--accent2-light); }
+
+  /* Row detail popover */
+  #row-detail-popup {
+    position: fixed;
+    z-index: 9999;
+    display: none;
+    background: #1e1e1c;
+    color: #e8e6e3;
+    border-radius: var(--radius);
+    padding: 0.875rem 1rem;
+    width: 280px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
+  }
+  #row-detail-popup .rdp-title {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(232,230,227,0.5);
+    margin-bottom: 0.5rem;
+  }
+  #row-detail-popup .rdp-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    gap: 0.75rem;
+  }
+  #row-detail-popup .rdp-row:last-of-type { border-bottom: none; }
+  #row-detail-popup .rdp-label { color: rgba(232,230,227,0.7); }
+  #row-detail-popup .rdp-right { display: inline-flex; align-items: center; gap: 0.45rem; }
+  #row-detail-popup .rdp-hours {
+    font-size: 0.68rem;
+    color: rgba(232,230,227,0.7);
+    background: rgba(255,255,255,0.08);
+    padding: 0.05rem 0.4rem;
+    border-radius: 99px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  #row-detail-popup .rdp-val { font-variant-numeric: tabular-nums; color: #fff; white-space: nowrap; }
+  #row-detail-popup .rdp-val.muted { color: rgba(232,230,227,0.55); }
+  #row-detail-popup .rdp-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.55rem;
+    margin-top: 0.4rem;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    font-weight: 600;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  #row-detail-popup .rdp-edit {
+    display: block;
+    margin-top: 0.75rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.72rem;
+    color: rgba(180,210,255,0.9);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  #row-detail-popup .rdp-edit:hover { text-decoration: underline; }
   .compare-total-row {
     display: flex;
     justify-content: space-between;
@@ -426,7 +512,9 @@
     color: #e8e6e3;
     border-radius: var(--radius);
     padding: 0.875rem 1rem;
-    width: 270px;
+    width: auto;
+    min-width: 280px;
+    max-width: 440px;
     font-size: 0.73rem;
     line-height: 1.6;
     box-shadow: 0 8px 24px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
@@ -444,9 +532,37 @@
   #tooltip-popup ul { padding-left: 1.1rem; margin: 0; }
   #tooltip-popup li { margin-bottom: 0.3rem; }
   #tooltip-popup li:last-child { margin-bottom: 0; }
-  #tooltip-popup p { margin: 0; }
+  #tooltip-popup p { margin: 0.4rem 0 0; }
+  #tooltip-popup p:first-child { margin-top: 0; }
   #tooltip-popup strong { color: #fff; font-weight: 600; }
   #tooltip-popup code { background: rgba(255,255,255,0.12); border-radius: 3px; padding: 0 3px; }
+  #tooltip-popup table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.25rem 0 0;
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+  #tooltip-popup th, #tooltip-popup td {
+    text-align: left;
+    padding: 0.35rem 0.45rem;
+    border-bottom: 1px solid rgba(255,255,255,0.09);
+    vertical-align: top;
+  }
+  #tooltip-popup th {
+    color: rgba(232,230,227,0.55);
+    font-weight: 600;
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom-color: rgba(255,255,255,0.18);
+  }
+  #tooltip-popup td:last-child, #tooltip-popup th:last-child {
+    text-align: right;
+    white-space: nowrap;
+  }
+  #tooltip-popup tr:last-child td { border-bottom: none; padding-top: 0.5rem; }
+  #tooltip-popup tr:last-child td strong { color: #fff; }
 
   /* Reset */
   .reset-btn {
@@ -557,7 +673,7 @@
         <div class="qs-field">
           <label for="a-staff">職員数 <span class="tt" data-field="a-staff" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></label>
           <div class="qs-input-row">
-            <input class="qs-input" type="number" id="a-staff" value="40" min="1" step="1" oninput="calc()">
+            <input class="qs-input" type="number" id="a-staff" value="30" min="1" step="1" oninput="calc()">
             <span class="unit">名</span>
           </div>
         </div>
@@ -571,14 +687,14 @@
         <div class="qs-field">
           <label for="a-bonus">賞与 発行回数 <span class="tt" data-field="a-bonus" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></label>
           <div class="qs-input-row">
-            <input class="qs-input" type="number" id="a-bonus" value="2" min="0" max="4" step="1" oninput="calc()">
+            <input class="qs-input" type="number" id="a-bonus" value="3" min="0" max="4" step="1" oninput="calc()">
             <span class="unit">回/年</span>
           </div>
         </div>
         <div class="qs-field">
           <label for="a-hourly">担当者 時給換算 <span class="tt" data-field="a-hourly" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></label>
           <div class="qs-input-row">
-            <input class="qs-input" type="number" id="a-hourly" value="2500" min="1000" step="100" oninput="calc()">
+            <input class="qs-input" type="number" id="a-hourly" value="3000" min="1000" step="100" oninput="calc()">
             <span class="unit">円</span>
           </div>
         </div>
@@ -596,37 +712,33 @@
         <thead>
           <tr>
             <th style="width:22%">項目</th>
-            <th style="width:28%">説明・根拠</th>
+            <th style="width:41%">説明・根拠</th>
             <th style="width:13%">単価</th>
             <th style="width:10%">発行数</th>
             <th style="width:14%">小計/年</th>
-            <th style="width:13%">出典</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="item-name">用紙代（A4）</td>
-            <td class="item-desc">1枚 ≈ 1円</td>
+            <td class="item-desc">1枚 ≈ 1円 <a class="source-link" href="https://www.askul.co.jp/v/1030/?cateId=2&categoryLll=1&categoryLl=02&categoryL=0203&categoryM=0203001&categoryS=02030010003&variationItemLImgPath=L1%2F542680_l1.jpg#:~:text=コピー用紙%E3%80%80マルチペーパー%E3%80%80スーパーホワイト%2B" target="_blank">→ 出典</a></td>
             <td><input class="num-input" type="number" id="p-paper-unit" value="1" min="0" step="0.5" oninput="calc()"><span class="unit">円/枚</span></td>
             <td class="item-desc" id="p-paper-qty">—</td>
             <td class="item-total" id="p-paper-total">¥560</td>
-            <td><a class="source-link" href="https://www.askul.co.jp/v/1030/?cateId=2&categoryLll=1&categoryLl=02&categoryL=0203&categoryM=0203001&categoryS=02030010003&variationItemLImgPath=L1%2F542680_l1.jpg#:~:text=コピー用紙%E3%80%80マルチペーパー%E3%80%80スーパーホワイト%2B" target="_blank">→ 出典</a></td>
           </tr>
           <tr>
             <td class="item-name">印刷（トナー）</td>
-            <td class="item-desc">モノクロレーザー ≈ 3円/枚</td>
+            <td class="item-desc">モノクロレーザー ≈ 3円/枚 <a class="source-link" href="https://faq.ricoh.jp/app/answers/detail/a_id/4292/~/%E5%8D%B0%E5%88%B7%E6%99%82%E3%81%AE1%E6%9E%9A%E3%81%82%E3%81%9F%E3%82%8A%E3%81%AE%E6%96%99%E9%87%91%EF%BC%88%E3%83%A9%E3%83%B3%E3%83%8B%E3%83%B3%E3%82%B0%E3%82%B3%E3%82%B9%E3%83%88%EF%BC%89%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%EF%BC%88ricoh-sp-c%E8%A3%BD%E5%93%81%E7%BE%A4%EF%BC%89#:~:text=カラーレーザープリンター（RICOH%20SP%20C製品群）" target="_blank">→ 出典</a></td>
             <td><input class="num-input" type="number" id="p-toner-unit" value="3" min="0" step="0.5" oninput="calc()"><span class="unit">円/枚</span></td>
             <td class="item-desc" id="p-toner-qty">—</td>
             <td class="item-total" id="p-toner-total">¥1,680</td>
-            <td><a class="source-link" href="https://faq.ricoh.jp/app/answers/detail/a_id/4292/~/%E5%8D%B0%E5%88%B7%E6%99%82%E3%81%AE1%E6%9E%9A%E3%81%82%E3%81%9F%E3%82%8A%E3%81%AE%E6%96%99%E9%87%91%EF%BC%88%E3%83%A9%E3%83%B3%E3%83%8B%E3%83%B3%E3%82%B0%E3%82%B3%E3%82%B9%E3%83%88%EF%BC%89%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%EF%BC%88ricoh-sp-c%E8%A3%BD%E5%93%81%E7%BE%A4%EF%BC%89#:~:text=カラーレーザープリンター（RICOH%20SP%20C製品群）" target="_blank">→ 出典</a></td>
           </tr>
           <tr>
             <td class="item-name">封筒（長形3号）</td>
-            <td class="item-desc">市販品 ≈ 5円/枚</td>
+            <td class="item-desc">市販品 ≈ 5円/枚 <a class="source-link" href="https://www.amazon.co.jp/s?k=%E5%B0%81%E7%AD%92+%E9%95%B7%E5%BD%A23%E5%8F%B7+%E9%95%B73+%E8%8C%B6%E5%B0%81%E7%AD%92&__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&crid=V1IAVYVGMWUF&sprefix=%E5%B0%81%E7%AD%92+%E9%95%B7%E5%BD%A23%E5%8F%B7+%E9%95%B73+%E8%8C%B6%E5%B0%81%E7%AD%92,aps,267#:~:text=長形3号%20封筒" target="_blank">→ 出典</a></td>
             <td><input class="num-input" type="number" id="p-env-unit" value="5" min="0" step="1" oninput="calc()"><span class="unit">円/枚</span></td>
             <td class="item-desc" id="p-env-qty">—</td>
             <td class="item-total" id="p-env-total">¥6,160</td>
-            <td><a class="source-link" href="https://www.amazon.co.jp/s?k=%E5%B0%81%E7%AD%92+%E9%95%B7%E5%BD%A23%E5%8F%B7+%E9%95%B73+%E8%8C%B6%E5%B0%81%E7%AD%92&__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&crid=V1IAVYVGMWUF&sprefix=%E5%B0%81%E7%AD%92+%E9%95%B7%E5%BD%A23%E5%8F%B7+%E9%95%B73+%E8%8C%B6%E5%B0%81%E7%AD%92,aps,267#:~:text=長形3号%20封筒" target="_blank">→ 出典</a></td>
           </tr>
         </tbody>
       </table>
@@ -639,21 +751,19 @@
         <thead>
           <tr>
             <th style="width:22%">項目</th>
-            <th style="width:28%">説明・根拠</th>
+            <th style="width:41%">説明・根拠</th>
             <th style="width:13%">単価</th>
             <th style="width:10%">発行数</th>
             <th style="width:14%">小計/年</th>
-            <th style="width:13%">出典</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="item-name">定形郵便</td>
-            <td class="item-desc">84円 → 110円 📈 30年ぶりに値上（2024年10月）</td>
+            <td class="item-desc">84円 → 110円 📈 30年ぶりに値上（2024年10月） <a class="source-link" href="https://www.post.japanpost.jp/send/domestic/charge/list/one_two.html#:~:text=110円" target="_blank">→ 出典</a></td>
             <td><input class="num-input" type="number" id="p-post-unit" value="110" min="0" step="1" oninput="calc()"><span class="unit">円/通</span></td>
             <td class="item-desc" id="p-post-qty">—</td>
             <td class="item-total" id="p-post-total">¥61,600</td>
-            <td><a class="source-link" href="https://www.post.japanpost.jp/send/domestic/charge/list/one_two.html#:~:text=110円" target="_blank">→ 出典</a></td>
           </tr>
           <tr>
             <td class="item-name">手渡し割合</td>
@@ -661,7 +771,6 @@
             <td><input class="num-input" type="number" id="p-handover-pct" value="0" min="0" max="100" step="5" oninput="calc()"><span class="unit">%</span></td>
             <td class="item-desc">—</td>
             <td class="item-total" id="p-handover-save" style="color:var(--accent2)">¥0</td>
-            <td>—</td>
           </tr>
         </tbody>
       </table>
@@ -674,21 +783,19 @@
         <thead>
           <tr>
             <th style="width:22%">項目</th>
-            <th style="width:28%">説明・根拠</th>
+            <th style="width:41%">説明・根拠</th>
             <th style="width:13%">単価</th>
             <th style="width:10%">時間数</th>
             <th style="width:14%">小計/年</th>
-            <th style="width:13%">出典</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="item-name">封入作業</td>
-            <td class="item-desc">印刷→折→封入。約3分/名</td>
+            <td class="item-desc">印刷→折→封入。約3分/名 <a class="source-link" href="https://kani-tax.com/freee-kyuyo-meisai-denshi-kosuto-sakugen/#:~:text=毎月の印刷・封入・配布工数がゼロになり,印刷コストが削減されます。" target="_blank">→ 出典</a></td>
             <td><input class="num-input" type="number" id="p-seal-min" value="3" min="1" max="10" step="0.5" oninput="calc()"><span class="unit">分/名</span></td>
             <td class="item-desc" id="p-seal-hours">—h</td>
             <td class="item-total" id="p-seal-total">¥29,167</td>
-            <td><a class="source-link" href="https://kani-tax.com/freee-kyuyo-meisai-denshi-kosuto-sakugen/#:~:text=毎月の印刷・封入・配布工数がゼロになり,印刷コストが削減されます。" target="_blank">→ 出典</a></td>
           </tr>
           <tr>
             <td class="item-name">投函・郵便局往復</td>
@@ -696,7 +803,6 @@
             <td><input class="num-input" type="number" id="p-post-min" value="45" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
             <td class="item-desc" id="p-post-hours">—h</td>
             <td class="item-total" id="p-post-labor-total">¥26,042</td>
-            <td>—</td>
           </tr>
           <tr>
             <td class="item-name">不着・再発行・紛失対応</td>
@@ -704,7 +810,6 @@
             <td><input class="num-input" type="number" id="p-inquiry-hours" value="12" min="0" step="1" oninput="calc()"><span class="unit">時間/年</span></td>
             <td class="item-desc" id="p-inquiry-disp">—h</td>
             <td class="item-total" id="p-inquiry-total">¥20,833</td>
-            <td>—</td>
           </tr>
         </tbody>
       </table>
@@ -748,7 +853,7 @@
     </div>
 
     <div class="section s-tlabor">
-      <div class="section-title"><span>② 人件費換算（最小限） <span class="tt" data-field="t-labor-tr" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></span><span class="section-title-total"><span class="stt-label">合計：</span><span id="t-labor-subtotal">¥11,458</span></span></div>
+      <div class="section-title"><span>② 人件費換算（最小限）</span><span class="section-title-total"><span class="stt-label">合計：</span><span id="t-labor-subtotal">¥11,458</span></span></div>
       <table class="input-table">
         <thead>
           <tr>
@@ -762,15 +867,15 @@
         <tbody>
           <tr>
             <td class="item-name">CSV/データ取込</td>
-            <td class="item-desc">月次アップロード作業。約15分/回</td>
-            <td><input class="num-input" type="number" id="t-upload-min" value="15" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
+            <td class="item-desc">7〜12分/回 <span class="tt" data-field="t-upload" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
+            <td><input class="num-input" type="number" id="t-upload-min" value="10" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
             <td class="item-desc" id="t-upload-hours">—h</td>
             <td class="item-total" id="t-upload-total">¥7,292</td>
           </tr>
           <tr>
             <td class="item-name">配信確認・問合せ対応</td>
-            <td class="item-desc">未確認者フォロー等。年間推定2時間</td>
-            <td><input class="num-input" type="number" id="t-check-hours" value="2" min="0" step="1" oninput="calc()"><span class="unit">時間/年</span></td>
+            <td class="item-desc">30分以内 <span class="tt" data-field="t-check" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
+            <td><input class="num-input" type="number" id="t-check-min" value="15" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
             <td class="item-desc" id="t-check-disp">—h</td>
             <td class="item-total" id="t-check-total">¥4,167</td>
           </tr>
@@ -779,7 +884,7 @@
             <td class="item-desc">職員が自己完結（マイページから再表示）</td>
             <td>—</td>
             <td class="item-desc">—</td>
-            <td class="item-total" style="color:var(--accent2)">¥0（自己完結）</td>
+            <td class="item-total" style="color:var(--text3)">—</td>
           </tr>
         </tbody>
       </table>
@@ -790,23 +895,6 @@
 
   <!-- TAB: Compare -->
   <div id="tab-compare" class="tab-panel">
-    <div class="compare-grid">
-      <div class="compare-card">
-        <div class="compare-card-head">紙運用 — 年間コスト内訳</div>
-        <div class="compare-row"><span class="cr-label">印刷・用紙費</span><span class="cr-val" id="c-print">¥8,400</span></div>
-        <div class="compare-row"><span class="cr-label">郵送費</span><span class="cr-val" id="c-post">¥61,600</span></div>
-        <div class="compare-row"><span class="cr-label">人件費換算</span><span class="cr-val" id="c-labor">¥75,000</span></div>
-        <div class="compare-total-row"><span>合計</span><span id="c-paper-total">¥145,000</span></div>
-      </div>
-      <div class="compare-card teamrise">
-        <div class="compare-card-head">TeamRise 給与明細 — 年間コスト内訳</div>
-        <div class="compare-row"><span class="cr-label">配信サービス費</span><span class="cr-val" id="c-service">¥72,000</span></div>
-        <div class="compare-row"><span class="cr-label">人件費換算</span><span class="cr-val" id="c-tlabor">¥11,458</span></div>
-        <div class="compare-row"><span class="cr-label">再発行コスト</span><span class="cr-val" style="color:var(--accent2)">¥0（自己完結）</span></div>
-        <div class="compare-total-row"><span>合計</span><span id="c-tr-total">¥83,458</span></div>
-      </div>
-    </div>
-
     <!-- Bar chart -->
     <div class="section-title" style="margin-bottom:1rem">コスト比較バー</div>
     <div class="bar-wrap">
@@ -829,12 +917,30 @@
       </div>
     </div>
 
+    <div class="compare-grid" style="margin-top:2rem">
+      <div class="compare-card">
+        <div class="compare-card-head">紙運用 — 年間コスト内訳</div>
+        <div class="compare-row clickable" onclick="showRowDetail(this,'plabor',event)"><span class="cr-label">人件費換算</span><span class="cr-right"><span class="cr-hours" id="c-labor-hours">45h</span><span class="cr-val" id="c-labor">¥75,000</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-row clickable" onclick="showRowDetail(this,'print',event)"><span class="cr-label">印刷・用紙費</span><span class="cr-right"><span class="cr-val" id="c-print">¥8,400</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-row clickable" onclick="showRowDetail(this,'post',event)"><span class="cr-label">郵送費</span><span class="cr-right"><span class="cr-val" id="c-post">¥61,600</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-total-row"><span>合計</span><span id="c-paper-total">¥145,000</span></div>
+      </div>
+      <div class="compare-card teamrise">
+        <div class="compare-card-head">TeamRise 給与明細 — 年間コスト内訳</div>
+        <div class="compare-row clickable" onclick="showRowDetail(this,'tlabor',event)"><span class="cr-label">人件費換算</span><span class="cr-right"><span class="cr-hours" id="c-tlabor-hours">5h</span><span class="cr-val" id="c-tlabor">¥11,458</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-row clickable" onclick="showRowDetail(this,'service',event)"><span class="cr-label">配信サービス費</span><span class="cr-right"><span class="cr-val" id="c-service">¥72,000</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-row"><span class="cr-label">再発行コスト</span><span class="cr-val" style="color:var(--accent2)">¥0（自己完結）</span></div>
+        <div class="compare-total-row"><span>合計</span><span id="c-tr-total">¥83,458</span></div>
+      </div>
+    </div>
+
   </div>
 
 
 </div>
 
 <div id="tooltip-popup"></div>
+<div id="row-detail-popup"></div>
 
 <script>
   function n(id) { return document.getElementById(id); }
@@ -868,11 +974,11 @@
     'p-post-unit': 110, 'p-handover-pct': 0,
     'p-seal-min': 3, 'p-post-min': 45, 'p-inquiry-hours': 12,
     't-base-month': 2000, 't-per-user': 100,
-    't-upload-min': 15, 't-check-hours': 2,
-    'a-staff': 40, 'a-monthly': 12, 'a-bonus': 2, 'a-hourly': 2500
+    't-upload-min': 10, 't-check-min': 15,
+    'a-staff': 30, 'a-monthly': 12, 'a-bonus': 3, 'a-hourly': 3000
   };
 
-  const SCHEMA_VERSION = 1;
+  const SCHEMA_VERSION = 2;
   const SAVE_KEY = 'payslip_calc';
 
   function resetAll() {
@@ -962,10 +1068,11 @@
     const baseMonth = intVal('t-base-month');
     const perUser = intVal('t-per-user');
     const uploadMin = intVal('t-upload-min');
-    const checkHours = intVal('t-check-hours');
+    const checkMin = intVal('t-check-min');
 
     const serviceCost = baseMonth * 12 + perUser * staff * 12;
     const uploadHours = (uploadMin * rounds) / 60;
+    const checkHours = (checkMin * rounds) / 60;
     const trLabor = (uploadHours + checkHours) * hourly;
     const trTotal = serviceCost + trLabor;
     const totalTrTime = uploadHours + checkHours;
@@ -1010,9 +1117,11 @@
     n('c-print').textContent = fmt(printCost);
     n('c-post').textContent = fmt(postCost);
     n('c-labor').textContent = fmt(laborTotal);
+    n('c-labor-hours').textContent = fmtH(totalPaperTime);
     n('c-paper-total').textContent = fmt(paperTotal);
     n('c-service').textContent = fmt(serviceCost);
     n('c-tlabor').textContent = fmt(trLabor);
+    n('c-tlabor-hours').textContent = fmtH(totalTrTime);
     n('c-tr-total').textContent = fmt(trTotal);
 
     // Bar chart
@@ -1052,7 +1161,8 @@
     'a-hourly':  '### 公益法人の人件費換算について：\n\n* 年収430万円 ÷ 12ヶ月 ÷ 160h ≒ ¥2,240/h。\n* 社会保険込みの実コストは×1.3〜1.5倍で約¥2,900〜¥3,350/hが適切な事業者コスト。\n* ¥3,500は若干高め但し誤差範囲内。\n\n[→ 根拠](https://job-medley.com/tips/detail/37516/)',
     'post-warn': '### 郵便料金 2024年10月値上げ\n\n* 定形郵便が**30年ぶりに値上**（84円 → 110円）。\n* 100名規模では年間郵送費だけで **¥154,000** を超えます。',
     't-service': 'TeamRise給与明細の正式料金は非公開（要問合せ）。\n\n業界水準参考：OBC奉行Edge **¥60/名/月**、一体型は **¥300/名/月**前後。\n\n[→ 他社比較](https://www.obc.co.jp/bugyo-edge/payment/price) / [→ TeamRise公式](https://maki.ne.jp/payroll/function_option/)',
-    't-labor-tr': '郵送不要のため、在宅・遠隔勤務職員への配布コストが発生しません。\n\n明細紛失・再発行も職員が自己対応できます。'
+    't-upload': '### CSV/データ取込 — 作業内訳\n\n| 作業工程 | 予想時間/回 |\n|---|---|\n| 勤怠システムから（CSV）データ抽出・作成 | 3〜5分 |\n| 給与計算システムにCSV取込 | 1〜2分 |\n| エラーチェック・従業員情報の不備修正 | 3〜5分 |\n| **合計** | **7〜12分** |\n\n※CSVの項目加工が不要な場合の目安。',
+    't-check':  '### 配信確認・問合せ対応 — 作業内訳\n\n| 業務内容 | 担当者の作業内容 | 予想時間/回 |\n|---|---|---|\n| 配信確認・チェック | 一斉配信エラーのチェック | 約10分 |\n| 問合せ対応 | 「明細が見られない」「手当の計算方法が知りたい」など従業員からの問合せ対応 | 約0〜15分 |\n| **合計** |  | **約10〜25分** |'
   };
 
   function ttInline(t) {
@@ -1073,9 +1183,32 @@
 
   function renderMd(md) {
     const lines = md.split('\n');
-    let html = '', inList = false;
+    let html = '', inList = false, tableLines = [];
+    const parseCells = s => s.replace(/^\s*\||\|\s*$/g, '').split('|').map(c => c.trim());
+    const flushTable = () => {
+      if (tableLines.length < 2) { tableLines = []; return; }
+      const header = parseCells(tableLines[0]);
+      const body = tableLines.slice(2).map(parseCells);
+      let t = '<table><thead><tr>';
+      header.forEach(h => t += '<th>' + ttInline(h) + '</th>');
+      t += '</tr></thead><tbody>';
+      body.forEach(row => {
+        t += '<tr>';
+        row.forEach(c => t += '<td>' + ttInline(c) + '</td>');
+        t += '</tr>';
+      });
+      t += '</tbody></table>';
+      html += t;
+      tableLines = [];
+    };
     for (const raw of lines) {
       const l = raw.trim();
+      if (l.startsWith('|') && l.endsWith('|')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        tableLines.push(l);
+        continue;
+      }
+      if (tableLines.length) flushTable();
       if (!l) { if (inList) { html += '</ul>'; inList = false; } continue; }
       if (l.startsWith('### ')) {
         if (inList) { html += '</ul>'; inList = false; }
@@ -1089,6 +1222,7 @@
       }
     }
     if (inList) html += '</ul>';
+    if (tableLines.length) flushTable();
     return html;
   }
 
@@ -1128,6 +1262,92 @@
   document.addEventListener('click', e => {
     if (!e.target.closest('.tt')) { ttPopup.style.display = 'none'; ttActive = null; }
   });
+
+  // ---- Row detail popover ----
+  const ROW_DETAIL = {
+    print:   { tab:'paper',    section:'s-print', title:'印刷・用紙費 — 内訳',
+               items:[['用紙代（A4）','p-paper-total'],['印刷（トナー）','p-toner-total'],['封筒（長形3号）','p-env-total']],
+               total:'p-print-subtotal' },
+    post:    { tab:'paper',    section:'s-post',  title:'郵送費 — 内訳',
+               items:[['定形郵便','p-post-total'],['手渡し控除','p-handover-save']],
+               total:'p-post-subtotal' },
+    plabor:  { tab:'paper',    section:'s-labor', title:'人件費換算 — 内訳',
+               items:[['封入作業','p-seal-total','p-seal-hours'],['投函・郵便局往復','p-post-labor-total','p-post-hours'],['不着・再発行対応','p-inquiry-total','p-inquiry-disp']],
+               total:'p-labor-subtotal', totalHours:'c-labor-hours' },
+    service: { tab:'teamrise', section:'s-service', title:'配信サービス費 — 内訳',
+               items:[['基本月額（固定）','t-base-total'],['従業員1名あたり月額','t-user-total']],
+               total:'t-service-subtotal' },
+    tlabor:  { tab:'teamrise', section:'s-tlabor', title:'人件費換算 — 内訳',
+               items:[['CSV/データ取込','t-upload-total','t-upload-hours'],['配信確認・問合せ対応','t-check-total','t-check-disp']],
+               total:'t-labor-subtotal', totalHours:'c-tlabor-hours' }
+  };
+
+  const rdPopup = document.getElementById('row-detail-popup');
+  let rdActiveRow = null;
+
+  function showRowDetail(rowEl, key, ev) {
+    if (ev) ev.stopPropagation();
+    const cfg = ROW_DETAIL[key];
+    if (!cfg) return;
+    if (rdActiveRow === rowEl && rdPopup.style.display === 'block') {
+      hideRowDetail();
+      return;
+    }
+    const rows = cfg.items.map(([label, id, hoursId]) => {
+      const val = (n(id)?.textContent || '—').trim();
+      const muted = val.startsWith('▲') || val === '¥0' ? ' muted' : '';
+      const hours = hoursId ? (n(hoursId)?.textContent || '').trim() : '';
+      const pill = hours ? `<span class="rdp-hours">${hours}</span>` : '';
+      return `<div class="rdp-row"><span class="rdp-label">${label}</span><span class="rdp-right">${pill}<span class="rdp-val${muted}">${val}</span></span></div>`;
+    }).join('');
+    const total = (n(cfg.total)?.textContent || '').trim();
+    const totalHours = cfg.totalHours ? (n(cfg.totalHours)?.textContent || '').trim() : '';
+    const totalPill = totalHours ? `<span class="rdp-hours">${totalHours}</span>` : '';
+    rdPopup.innerHTML = `
+      <div class="rdp-title">${cfg.title}</div>
+      ${rows}
+      <div class="rdp-total"><span>小計</span><span class="rdp-right">${totalPill}<span>${total}</span></span></div>
+      <a class="rdp-edit" onclick="gotoSource('${cfg.tab}','${cfg.section}')">→ 元の表で編集する</a>
+    `;
+    rdPopup.style.visibility = 'hidden';
+    rdPopup.style.display = 'block';
+    const r = rowEl.getBoundingClientRect();
+    const p = rdPopup.getBoundingClientRect();
+    let left = r.left;
+    let top = r.bottom + 6;
+    if (left + p.width > window.innerWidth - 8) left = window.innerWidth - p.width - 8;
+    if (left < 8) left = 8;
+    if (top + p.height > window.innerHeight - 8) top = r.top - p.height - 6;
+    rdPopup.style.left = left + 'px';
+    rdPopup.style.top = top + 'px';
+    rdPopup.style.visibility = 'visible';
+    rdActiveRow = rowEl;
+  }
+
+  function hideRowDetail() {
+    rdPopup.style.display = 'none';
+    rdActiveRow = null;
+  }
+
+  function gotoSource(tabName, sectionCls) {
+    const cellMap = { paper: 0, teamrise: 1, compare: 2 };
+    const cells = document.querySelectorAll('.summary-bar .summary-cell');
+    const cell = cells[cellMap[tabName]];
+    switchTab(tabName, cell);
+    hideRowDetail();
+    requestAnimationFrame(() => {
+      const sec = document.querySelector('#tab-' + tabName + ' .' + sectionCls);
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#row-detail-popup') && !e.target.closest('.compare-row.clickable')) {
+      hideRowDetail();
+    }
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideRowDetail(); });
+  window.addEventListener('scroll', hideRowDetail, true);
 
   // Init
   loadState();
