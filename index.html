@@ -42,9 +42,20 @@
   .container { max-width: 900px; margin: 0 auto; }
 
   /* Header */
-  .header { margin-bottom: 2rem; }
+  .header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
   .header h1 { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.25rem; }
   .header p { font-size: 0.8rem; color: var(--text2); }
+
+  /* Labor toggle */
+  .labor-toggle { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text2); user-select: none; cursor: pointer; white-space: nowrap; }
+  .labor-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+  .labor-toggle .lt-switch { position: relative; width: 30px; height: 17px; background: var(--border); border-radius: 999px; transition: background 0.15s; flex-shrink: 0; }
+  .labor-toggle .lt-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; background: #fff; border-radius: 50%; transition: transform 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+  .labor-toggle input:checked + .lt-switch { background: var(--accent2); }
+  .labor-toggle input:checked + .lt-switch::after { transform: translateX(13px); }
+  .compare-row.labor-row.cost-only .cr-val,
+  .compare-row.labor-row.cost-only .cr-chev { display: none; }
+  .compare-row.labor-row.cost-only { cursor: default; }
 
   /* Summary bar / tab switcher */
   .summary-bar {
@@ -608,8 +619,15 @@
 <div class="container">
 
   <div class="header">
-    <h1>給与明細 コスト試算ツール</h1>
-    <p>公益法人向け ／ 紙運用 vs TeamRise 給与明細 ／ 各項目を自由に編集して試算できます</p>
+    <div>
+      <h1>給与明細 コスト試算ツール</h1>
+      <p>公益法人向け ／ 紙運用 vs TeamRise 給与明細 ／ 各項目を自由に編集して試算できます</p>
+    </div>
+    <label class="labor-toggle">
+      <span>人件費込</span>
+      <input type="checkbox" id="opt-include-labor" checked onchange="calc()">
+      <span class="lt-switch"></span>
+    </label>
   </div>
 
   <!-- Summary Bar / Tab Switcher -->
@@ -617,28 +635,29 @@
     <div class="summary-cell highlight sc-active" onclick="switchTab('paper', this)">
       <div class="label">紙運用 年間合計</div>
       <div class="value" id="s-paper">¥184,240</div>
-      <div class="sub">印刷+郵送+人件費</div>
+      <div class="sub" id="s-paper-sub">印刷+郵送+人件費</div>
     </div>
     <div class="summary-cell green" onclick="switchTab('teamrise', this)">
       <div class="label">TeamRise 年間合計</div>
       <div class="value" id="s-tr">¥76,347</div>
-      <div class="sub">配信費+人件費</div>
+      <div class="sub" id="s-tr-sub">配信費+人件費</div>
     </div>
     <div class="summary-cell" onclick="switchTab('compare', this)">
       <div class="label">比較・試算結果</div>
       <div class="compare-metrics-row">
         <div class="compare-metric">
           <div class="metric-val-row">
-            <span class="metric-val" id="s-save" style="color:var(--accent2)">¥107,893</span>
-            <span class="metric-badge" id="s-pct">↓59%</span>
+            <span class="metric-val" id="s-time" style="color:var(--accent2)">47h</span>
+            <span class="metric-badge" id="s-time-pct" data-field="s-time-pct" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)" style="cursor:help">↓0%</span>
           </div>
-          <div class="metric-sub">削減金額 / 年</div>
+          <div class="metric-sub">削減時間 / 年</div>
         </div>
         <div class="compare-metric">
           <div class="metric-val-row">
-            <span class="metric-val" id="s-time" style="color:var(--accent2)">47h</span>
+            <span class="metric-val" id="s-save" style="color:var(--accent2)">¥107,893</span>
+            <span class="metric-badge" id="s-pct" data-field="s-pct" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)" style="cursor:help">↓59%</span>
           </div>
-          <div class="metric-sub">削減時間 / 年</div>
+          <div class="metric-sub">削減金額 / 年</div>
         </div>
       </div>
     </div>
@@ -827,14 +846,14 @@
           <tr>
             <td class="item-name">基本月額（固定）<span class="est-badge">推定</span></td>
             <td class="item-desc">サービス基本料。要問合せのため推定値</td>
-            <td><input class="num-input" type="number" id="t-base-month" value="2000" min="0" step="100" oninput="calc()"><span class="unit">円/月</span></td>
+            <td><input class="num-input" type="number" id="t-base-month" value="3000" min="0" step="100" oninput="calc()"><span class="unit">円/月</span></td>
             <td class="item-desc">12ヶ月</td>
             <td class="item-total" id="t-base-total">¥24,000</td>
           </tr>
           <tr>
             <td class="item-name">従業員1名あたり月額<span class="est-badge">推定</span></td>
             <td class="item-desc">業界相場30〜60円/名/月（専用型）〜300円（一体型）</td>
-            <td><input class="num-input" type="number" id="t-per-user" value="100" min="0" step="10" oninput="calc()"><span class="unit">円/名/月</span></td>
+            <td><input class="num-input" type="number" id="t-per-user" value="0" min="0" step="10" oninput="calc()"><span class="unit">円/名/月</span></td>
             <td class="item-desc" id="t-user-qty">—</td>
             <td class="item-total" id="t-user-total">¥48,000</td>
           </tr>
@@ -858,7 +877,7 @@
           <tr>
             <td class="item-name">CSV/データ取込</td>
             <td class="item-desc">7〜12分/回 <span class="tt" data-field="t-upload" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
-            <td><input class="num-input" type="number" id="t-upload-min" value="10" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
+            <td><input class="num-input" type="number" id="t-upload-min" value="0" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
             <td class="item-desc" id="t-upload-hours">—h</td>
             <td class="item-total" id="t-upload-total">¥7,292</td>
           </tr>
@@ -910,14 +929,14 @@
     <div class="compare-grid" style="margin-top:2rem">
       <div class="compare-card">
         <div class="compare-card-head">紙運用 — 年間コスト内訳</div>
-        <div class="compare-row clickable" onclick="showRowDetail(this,'plabor',event)"><span class="cr-label">人件費換算</span><span class="cr-right"><span class="cr-hours" id="c-labor-hours">45h</span><span class="cr-val" id="c-labor">¥75,000</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-row labor-row clickable" id="c-paper-labor-row" onclick="showRowDetail(this,'plabor',event)"><span class="cr-label">人件費換算</span><span class="cr-right"><span class="cr-hours" id="c-labor-hours">45h</span><span class="cr-val" id="c-labor">¥75,000</span><span class="cr-chev">›</span></span></div>
         <div class="compare-row clickable" onclick="showRowDetail(this,'print',event)"><span class="cr-label">印刷・用紙費</span><span class="cr-right"><span class="cr-val" id="c-print">¥8,400</span><span class="cr-chev">›</span></span></div>
         <div class="compare-row clickable" onclick="showRowDetail(this,'post',event)"><span class="cr-label">郵送費</span><span class="cr-right"><span class="cr-val" id="c-post">¥61,600</span><span class="cr-chev">›</span></span></div>
         <div class="compare-total-row"><span>合計</span><span id="c-paper-total">¥145,000</span></div>
       </div>
       <div class="compare-card teamrise">
         <div class="compare-card-head">TeamRise 給与明細 — 年間コスト内訳</div>
-        <div class="compare-row clickable" onclick="showRowDetail(this,'tlabor',event)"><span class="cr-label">人件費換算</span><span class="cr-right"><span class="cr-hours" id="c-tlabor-hours">5h</span><span class="cr-val" id="c-tlabor">¥11,458</span><span class="cr-chev">›</span></span></div>
+        <div class="compare-row labor-row clickable" id="c-tr-labor-row" onclick="showRowDetail(this,'tlabor',event)"><span class="cr-label">人件費換算</span><span class="cr-right"><span class="cr-hours" id="c-tlabor-hours">5h</span><span class="cr-val" id="c-tlabor">¥11,458</span><span class="cr-chev">›</span></span></div>
         <div class="compare-row clickable" onclick="showRowDetail(this,'service',event)"><span class="cr-label">配信サービス費</span><span class="cr-right"><span class="cr-val" id="c-service">¥72,000</span><span class="cr-chev">›</span></span></div>
         <div class="compare-row"><span class="cr-label">再発行コスト</span><span class="cr-val" style="color:var(--accent2)">¥0（自己完結）</span></div>
         <div class="compare-total-row"><span>合計</span><span id="c-tr-total">¥83,458</span></div>
@@ -971,8 +990,8 @@
     'p-paper-unit': 1, 'p-toner-unit': 3, 'p-env-unit': 5,
     'p-post-unit': 110, 'p-handover-pct': 0,
     'p-seal-min': 3, 'p-post-min': 45, 'p-inquiry-hours': 12,
-    't-base-month': 2000, 't-per-user': 100,
-    't-upload-min': 10, 't-check-min': 15,
+    't-base-month': 3000, 't-per-user': 0,
+    't-upload-min': 0, 't-check-min': 15,
     'a-staff': 30, 'a-monthly': 12, 'a-bonus': 3, 'a-hourly': 3000
   };
 
@@ -1062,9 +1081,15 @@ function calc() {
     const trTotal = serviceCost + trLabor;
     const totalTrTime = uploadHours + checkHours;
 
-    const saving = paperTotal - trTotal;
-    const savingPct = paperTotal > 0 ? Math.round(saving / paperTotal * 100) : 0;
+    // ---- Display totals (toggle: 人件費込) ----
+    const includeLabor = document.getElementById('opt-include-labor').checked;
+    const paperDisplay = includeLabor ? paperTotal : (printCost + postCost);
+    const trDisplay = includeLabor ? trTotal : serviceCost;
+
+    const saving = paperDisplay - trDisplay;
+    const savingPct = paperDisplay > 0 ? Math.round(saving / paperDisplay * 100) : 0;
     const timeSaving = Math.round(totalPaperTime - totalTrTime);
+    const timeSavingPct = totalPaperTime > 0 ? Math.round((totalPaperTime - totalTrTime) / totalPaperTime * 100) : 0;
 
     // ---- Update DOM: Paper ----
     n('p-paper-qty').textContent = totalDocs + '通';
@@ -1104,28 +1129,39 @@ function calc() {
     n('c-post').textContent = fmt(postCost);
     n('c-labor').textContent = fmt(laborTotal);
     n('c-labor-hours').textContent = fmtH(totalPaperTime);
-    n('c-paper-total').textContent = fmt(paperTotal);
+    n('c-paper-total').textContent = fmt(paperDisplay);
     n('c-service').textContent = fmt(serviceCost);
     n('c-tlabor').textContent = fmt(trLabor);
     n('c-tlabor-hours').textContent = fmtH(totalTrTime);
-    n('c-tr-total').textContent = fmt(trTotal);
+    n('c-tr-total').textContent = fmt(trDisplay);
+    n('c-paper-labor-row').classList.toggle('cost-only', !includeLabor);
+    n('c-tr-labor-row').classList.toggle('cost-only', !includeLabor);
 
     // Bar chart
-    const maxCost = Math.max(paperTotal, trTotal, 1);
-    const paperPct = Math.max(4, Math.round(paperTotal / maxCost * 100));
-    const trPct = Math.max(4, Math.round(trTotal / maxCost * 100));
+    const maxCost = Math.max(paperDisplay, trDisplay, 1);
+    const paperPct = Math.max(4, Math.round(paperDisplay / maxCost * 100));
+    const trPct = Math.max(4, Math.round(trDisplay / maxCost * 100));
     n('bar-paper').style.width = paperPct + '%';
-    n('bar-paper-val').textContent = fmt(paperTotal);
+    n('bar-paper-val').textContent = fmt(paperDisplay);
     n('bar-tr').style.width = trPct + '%';
-    n('bar-tr-val').textContent = fmt(trTotal);
+    n('bar-tr-val').textContent = fmt(trDisplay);
     n('bar-saving-label').textContent = fmt(saving) + ' 削減';
 
     // Summary bar
-    n('s-paper').textContent = fmt(paperTotal);
-    n('s-tr').textContent = fmt(trTotal);
+    n('s-paper').textContent = fmt(paperDisplay);
+    n('s-tr').textContent = fmt(trDisplay);
+    n('s-paper-sub').textContent = includeLabor ? '印刷+郵送+人件費' : '印刷+郵送';
+    n('s-tr-sub').textContent = includeLabor ? '配信費+人件費' : '配信費';
     n('s-save').textContent = fmt(saving);
     n('s-pct').textContent = (savingPct >= 0 ? '↓' : '↑') + Math.abs(savingPct) + '%';
     n('s-time').textContent = timeSaving + 'h';
+    n('s-time-pct').textContent = (timeSavingPct >= 0 ? '↓' : '↑') + Math.abs(timeSavingPct) + '%';
+
+    TOOLTIPS['s-pct'] = '### 削減率（金額）' + (includeLabor ? '' : ' — 人件費除く') + '\n\n**式：** (紙運用 − TeamRise) ÷ 紙運用 × 100\n\n| 項目 | 値 |\n|---|---|\n| 紙運用 年間合計 | ' + fmt(paperDisplay) + ' |\n| TeamRise 年間合計 | ' + fmt(trDisplay) + ' |\n| 削減金額 | ' + fmt(saving) + ' |\n| **削減率** | **' + savingPct + '%** |';
+    TOOLTIPS['s-time-pct'] = '### 削減率（時間）\n\n**式：** (紙運用時間 − TeamRise時間) ÷ 紙運用時間 × 100\n\n| 項目 | 値 |\n|---|---|\n| 紙運用 年間時間 | ' + fmtH(totalPaperTime) + ' |\n| TeamRise 年間時間 | ' + fmtH(totalTrTime) + ' |\n| 削減時間 | ' + timeSaving + 'h |\n| **削減率** | **' + timeSavingPct + '%** |';
+    if (ttActive && (ttActive.dataset.field === 's-pct' || ttActive.dataset.field === 's-time-pct')) {
+      ttPopup.innerHTML = renderMd(TOOLTIPS[ttActive.dataset.field]);
+    }
 
     // Assumptions summary
     n('a-summary').textContent = '職員' + staff + '名 × ' + rounds + '回/年 = ' + totalDocs + '通発行。担当者時給¥' + Math.round(hourly).toLocaleString() + '。';
