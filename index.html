@@ -836,7 +836,7 @@
         <thead>
           <tr>
             <th style="width:22%">項目</th>
-            <th style="width:30%">説明・根拠</th>
+            <th style="width:30%">説明</th>
             <th style="width:15%">単価</th>
             <th style="width:14%">数量</th>
             <th style="width:19%">小計/年</th>
@@ -844,15 +844,15 @@
         </thead>
         <tbody>
           <tr>
-            <td class="item-name">基本月額（固定）<span class="est-badge">推定</span></td>
-            <td class="item-desc">サービス基本料。要問合せのため推定値</td>
+            <td class="item-name">基本月額（固定）</td>
+            <td class="item-desc">職員数で変動します</td>
             <td><input class="num-input" type="number" id="t-base-month" value="3000" min="0" step="100" oninput="calc()"><span class="unit">円/月</span></td>
             <td class="item-desc">12ヶ月</td>
             <td class="item-total" id="t-base-total">¥24,000</td>
           </tr>
           <tr>
-            <td class="item-name">従業員1名あたり月額<span class="est-badge">推定</span></td>
-            <td class="item-desc">業界相場30〜60円/名/月（専用型）〜300円（一体型）</td>
+            <td class="item-name">従業員1名あたり月額</td>
+            <td class="item-desc">TeamRise側にない <span class="tt" data-field="t-per-user" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
             <td><input class="num-input" type="number" id="t-per-user" value="0" min="0" step="10" oninput="calc()"><span class="unit">円/名/月</span></td>
             <td class="item-desc" id="t-user-qty">—</td>
             <td class="item-total" id="t-user-total">¥48,000</td>
@@ -875,18 +875,18 @@
         </thead>
         <tbody>
           <tr>
-            <td class="item-name">CSV/データ取込</td>
-            <td class="item-desc">7〜12分/回 <span class="tt" data-field="t-upload" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
-            <td><input class="num-input" type="number" id="t-upload-min" value="0" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
-            <td class="item-desc" id="t-upload-hours">—h</td>
-            <td class="item-total" id="t-upload-total">¥7,292</td>
-          </tr>
-          <tr>
             <td class="item-name">配信確認・問合せ対応</td>
             <td class="item-desc">30分以内 <span class="tt" data-field="t-check" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
             <td><input class="num-input" type="number" id="t-check-min" value="15" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
             <td class="item-desc" id="t-check-disp">—h</td>
             <td class="item-total" id="t-check-total">¥4,167</td>
+          </tr>
+          <tr>
+            <td class="item-name">CSV/データ取込</td>
+            <td class="item-desc">自動連携 <span class="tt" data-field="t-upload" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
+            <td><input class="num-input" type="number" id="t-upload-min" value="0" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
+            <td class="item-desc" id="t-upload-hours">—h</td>
+            <td class="item-total" id="t-upload-total">¥7,292</td>
           </tr>
           <tr>
             <td class="item-name">再発行</td>
@@ -1183,6 +1183,7 @@ function calc() {
     'a-hourly':  '### 公益法人の人件費換算について：\n\n* 年収430万円 ÷ 12ヶ月 ÷ 160h ≒ ¥2,240/h。\n* 社会保険込みの実コストは×1.3〜1.5倍で約¥2,900〜¥3,350/hが適切な事業者コスト。\n* ¥3,500は若干高め但し誤差範囲内。\n\n[→ 根拠](https://job-medley.com/tips/detail/37516/)',
     'post-warn': '### 郵便料金 2024年10月値上げ\n\n* 定形郵便が**30年ぶりに値上**（84円 → 110円）。\n* 100名規模では年間郵送費だけで **¥154,000** を超えます。',
     't-service': 'TeamRise給与明細の正式料金は非公開（要問合せ）。\n\n業界水準参考：OBC奉行Edge **¥60/名/月**、一体型は **¥300/名/月**前後。\n\n[→ 他社比較](https://www.obc.co.jp/bugyo-edge/payment/price) / [→ TeamRise公式](https://maki.ne.jp/payroll/function_option/)',
+    't-per-user': '業界相場30〜60円/名/月（専用型）〜300円（一体型）。\n\nTeamRiseは従業員1名あたりの従量課金が**ない**ため、¥0で試算しています。',
     't-upload': '### CSV/データ取込 — 作業内訳\n\n| 作業工程 | 予想時間/回 |\n|---|---|\n| 勤怠システムから（CSV）データ抽出・作成 | 3〜5分 |\n| 給与計算システムにCSV取込 | 1〜2分 |\n| エラーチェック・従業員情報の不備修正 | 3〜5分 |\n| **合計** | **7〜12分** |\n\n※CSVの項目加工が不要な場合の目安。',
     't-check':  '### 配信確認・問合せ対応 — 作業内訳\n\n| 業務内容 | 担当者の作業内容 | 予想時間/回 |\n|---|---|---|\n| 配信確認・チェック | 一斉配信エラーのチェック | 約10分 |\n| 問合せ対応 | 「明細が見られない」「手当の計算方法が知りたい」など従業員からの問合せ対応 | 約0〜15分 |\n| **合計** |  | **約10〜25分** |'
   };
