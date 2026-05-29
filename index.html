@@ -625,7 +625,7 @@
     </div>
     <label class="labor-toggle">
       <span>人件費込</span>
-      <input type="checkbox" id="opt-include-labor" checked onchange="calc()">
+      <input type="checkbox" id="opt-include-labor" onchange="calc()">
       <span class="lt-switch"></span>
     </label>
   </div>
@@ -862,7 +862,7 @@
     </div>
 
     <div class="section s-tlabor">
-      <div class="section-title"><span>② 人件費換算（最小限）</span><span class="section-title-total"><span class="stt-label">合計：</span><span id="t-labor-subtotal">¥11,458</span></span></div>
+      <div class="section-title"><span>② 人件費換算（最小限）</span><span class="section-title-totals"><span class="section-title-total"><span class="stt-label">合計時間：</span><span id="t-labor-hours">—h</span></span><span class="section-title-total"><span class="stt-label">合計：</span><span id="t-labor-subtotal">¥11,458</span></span></span></div>
       <table class="input-table">
         <thead>
           <tr>
@@ -876,8 +876,8 @@
         <tbody>
           <tr>
             <td class="item-name">配信確認・問合せ対応</td>
-            <td class="item-desc">30分以内 <span class="tt" data-field="t-check" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
-            <td><input class="num-input" type="number" id="t-check-min" value="15" min="0" step="5" oninput="calc()"><span class="unit">分/回</span></td>
+            <td class="item-desc">0〜15 <span class="tt" data-field="t-check" onmouseenter="showTooltip(this)" onmouseleave="scheduleHide()" onclick="toggleTooltip(this)">i</span></td>
+            <td><input class="num-input" type="number" id="t-check-min" value="3" min="0" step="1" oninput="calc()"><span class="unit">分/回</span></td>
             <td class="item-desc" id="t-check-disp">—h</td>
             <td class="item-total" id="t-check-total">¥4,167</td>
           </tr>
@@ -991,7 +991,7 @@
     'p-post-unit': 110, 'p-handover-pct': 0,
     'p-seal-min': 3, 'p-post-min': 45, 'p-inquiry-hours': 12,
     't-base-month': 3000, 't-per-user': 0,
-    't-upload-min': 0, 't-check-min': 15,
+    't-upload-min': 0, 't-check-min': 3,
     'a-staff': 30, 'a-monthly': 12, 'a-bonus': 3, 'a-hourly': 3000
   };
 
@@ -1123,6 +1123,7 @@ function calc() {
     n('t-upload-total').textContent = fmt(uploadHours * hourly);
     n('t-check-total').textContent = fmt(checkHours * hourly);
     n('t-labor-subtotal').textContent = fmt(trLabor);
+    n('t-labor-hours').textContent = fmtH(totalTrTime);
 
     // ---- Compare ----
     n('c-print').textContent = fmt(printCost);
@@ -1185,7 +1186,7 @@ function calc() {
     't-service': 'TeamRise給与明細の正式料金は非公開（要問合せ）。\n\n業界水準参考：OBC奉行Edge **¥60/名/月**、一体型は **¥300/名/月**前後。\n\n[→ 他社比較](https://www.obc.co.jp/bugyo-edge/payment/price) / [→ TeamRise公式](https://maki.ne.jp/payroll/function_option/)',
     't-per-user': '業界相場30〜60円/名/月（専用型）〜300円（一体型）。\n\nTeamRiseは従業員1名あたりの従量課金が**ない**ため、¥0で試算しています。',
     't-upload': '### CSV/データ取込 — 作業内訳\n\n| 作業工程 | 予想時間/回 |\n|---|---|\n| 勤怠システムから（CSV）データ抽出・作成 | 3〜5分 |\n| 給与計算システムにCSV取込 | 1〜2分 |\n| エラーチェック・従業員情報の不備修正 | 3〜5分 |\n| **合計** | **7〜12分** |\n\n※CSVの項目加工が不要な場合の目安。',
-    't-check':  '### 配信確認・問合せ対応 — 作業内訳\n\n| 業務内容 | 担当者の作業内容 | 予想時間/回 |\n|---|---|---|\n| 配信確認・チェック | 一斉配信エラーのチェック | 約10分 |\n| 問合せ対応 | 「明細が見られない」「手当の計算方法が知りたい」など従業員からの問合せ対応 | 約0〜15分 |\n| **合計** |  | **約10〜25分** |'
+    't-check':  '### 配信確認・問合せ対応 — 作業内訳\n\n| 業務内容 | 担当者の作業内容 | 予想時間/回 |\n|---|---|---|\n| 配信確認・チェック | 一斉配信エラーのチェック | 約3分 |\n| 問合せ対応 | 「明細が見られない」「手当の計算方法が知りたい」など従業員からの問合せ対応 | 約0〜15分 |\n| **合計** |  | **約3〜18分** |'
   };
 
   function ttInline(t) {
